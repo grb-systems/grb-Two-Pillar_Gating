@@ -4,45 +4,43 @@
 
 ## Epistemic Qualification and Operational Authorization
 
-**Status:** Provisional architectural specification / active development / pre-validation  
-**Architecture:** G³GT  
-**Organization:** Geometric Resource Bridging (GRB)  
-**Scope:** Public conceptual architecture, working distinctions, failure modes, falsifiers, and research questions  
-**Implementation:** Implementation-independent  
-**Runtime internals:** Intentionally outside the scope of this specification
+**Architecture:** G³GT — Geometric Resource Bridging (GRB)  
+**Status:** Provisional public architectural specification  
+**Maturity:** Active development · Pre-validation  
+**Scope:** Agent systems, tool use, delegated work, consequential boundaries, and qualified Return  
+**Implementation:** Implementation-independent
 
 ---
 
-## Overview
+## 1. Overview
 
-**Two-Pillar Gating** is a provisional architecture for keeping two questions separate:
+AI systems increasingly operate across boundaries separating information, interpretation, authority, tools, agents, and external effects.
 
-```text
-EPISTEMIC PILLAR
+A model may correctly interpret an instruction without having permission to carry it out.
 
-What is sufficiently grounded?
-```
+An agent may possess a capability without authority to exercise it.
 
-and:
+A delegated task may retain its wording while losing its original authorization.
 
-```text
-OPERATIONAL PILLAR
+An operation may be denied yet reappear through another route, actor, or semantic description.
 
-What is authorized
-to have consequences?
-```
+**Two-Pillar Gating** is a provisional architecture for preserving two distinct qualifications at these consequential boundaries.
 
-These questions may inform one another.
+### Pillar One — Epistemic Qualification
 
-They must not collapse into one another.
+**What is sufficiently grounded?**
 
-A claim may be well-supported without authorizing action.
+This concerns evidence, provenance, interpretation, contradiction, uncertainty, freshness, and the relationships among claims.
 
-An operation may remain prohibited even while its explanation is unresolved.
+### Pillar Two — Operational Authorization
 
-A system may also possess the capability to act without having either sufficient evidence or valid authority to do so.
+**What is presently authorized to have consequences?**
 
-The central rule is:
+This concerns identity, jurisdiction, delegated standing, scope, effect, permission, persistence, and current warrant.
+
+These responsibilities may inform one another.
+
+They must not manufacture one another.
 
 ```text
 EPISTEMIC WARRANT
@@ -50,1095 +48,944 @@ EPISTEMIC WARRANT
 OPERATIONAL AUTHORIZATION
 ```
 
-Two-Pillar Gating exists to preserve that distinction.
+A claim may be well supported without authorizing action.
+
+An operation may remain prohibited even while its explanation is unresolved.
+
+A system may have the technical ability to perform an operation without legitimate permission to do so.
+
+**Ground claims independently. Authorize consequences independently.**
+
+This distinction is the foundation of Two-Pillar Gating.
 
 ---
 
-# Why This Architecture Exists
+## 2. Why the Architecture Exists
 
-AI and multi-agent systems routinely move between:
+Agent systems increasingly coordinate workflows involving:
 
 ```text
-observation
-interpretation
-recommendation
-delegation
-tool use
-external consequence
+OBSERVATION
+    ↓
+INTERPRETATION
+    ↓
+TASK FORMATION
+    ↓
+DELEGATION
+    ↓
+TOOL SELECTION
+    ↓
+CONSEQUENTIAL ACTION
+    ↓
+OBSERVATION AND SETTLEMENT
 ```
 
-Those transitions can silently collapse different kinds of qualification.
+These stages introduce different kinds of qualification.
 
-For example:
+Failures may occur when one qualification is silently substituted for another.
+
+Examples include:
 
 ```text
 "This appears true"
-
-may become
-
-"therefore do it"
+        ↓
+"Therefore execute it"
 ```
-
-or:
 
 ```text
-"the system can do this"
-
-may become
-
-"the system may do this"
+"The agent can do this"
+        ↓
+"The agent may do this"
 ```
-
-or:
 
 ```text
-"a different agent requested it"
-
-may become
-
-"the previously denied action
-is now newly authorized"
+"The task was authorized earlier"
+        ↓
+"The resumed task remains authorized"
 ```
 
-Two-Pillar Gating treats these as distinct questions rather than one continuous permission surface.
+```text
+"The request has been renamed"
+        ↓
+"The previous restriction no longer applies"
+```
 
-Its practical concern is simple:
+Two-Pillar Gating exists to prevent such transitions from becoming implicit grants of authority.
 
-> **Do not allow uncertainty about truth to manufacture operational authority, and do not allow confidence about truth to manufacture operational authority either.**
+Its concern is not limited to detecting malicious instructions.
+
+It also applies to ordinary automation, legitimate delegation, incomplete evidence, changed circumstances, recovery, and release.
 
 ---
 
-# Core Proposition
+## 3. One Gate and Two Pillars
 
-The architecture separates two forms of qualification.
-
-## Pillar One — Epistemic Qualification
-
-The Epistemic Pillar asks:
-
-> **What is sufficiently grounded for the purpose at hand?**
-
-Relevant concerns may include:
-
-- provenance
-- source quality
-- freshness
-- contradiction
-- uncertainty
-- interpretation
-- evidence independence
-- contextual fit
-- unresolved relation
-
-The Epistemic Pillar may conclude:
+The two pillars are differentiated responsibilities meeting at a consequential boundary.
 
 ```text
-GROUNDED
-
-PARTIALLY GROUNDED
-
-UNRESOLVED
-
-CONTRADICTORY
-
-STALE
-
-INSUFFICIENTLY QUALIFIED
-```
-
-These are architectural categories, not a required runtime enum.
-
-Where uncertainty remains viable, the architecture may preserve it rather than force premature closure.
-
-```text
-UNRESOLVED
-≠
-FALSE
-
-UNRESOLVED
-≠
-AUTHORIZED
-```
-
----
-
-## Pillar Two — Operational Authorization
-
-The Operational Pillar asks:
-
-> **What may legitimately produce consequence?**
-
-Relevant concerns may include:
-
-- authority
-- jurisdiction
-- delegation
-- tool access
-- consequence
-- reversibility
-- approval
-- identity
-- scope
-- persistence
-- external effect
-
-An operation may be technically possible while remaining unauthorized.
-
-```text
-CAPABILITY
-≠
-AUTHORITY
-```
-
-Likewise:
-
-```text
-EVIDENCE
-≠
-AUTHORIZATION
-```
-
-and:
-
-```text
-CONFIDENCE
-≠
-PERMISSION
-```
-
-The Operational Pillar remains responsible for consequence even when the Epistemic Pillar has reached a strong conclusion.
-
----
-
-# One Gate Two Pillars
-
-The architecture can be represented compactly as:
-
-```text
-            CANDIDATE CLAIM /
-            REQUEST / ACTION
-                  |
-          +-------+-------+
-          |               |
-          |               |
+              PROPOSED
+         CLAIM / OPERATION
+                 |
+        +--------+--------+
+        |                 |
    EPISTEMIC         OPERATIONAL
-     PILLAR             PILLAR
-          |               |
+     PILLAR            PILLAR
+        |                 |
    What stands?       What may act?
-          |               |
-          +-------+-------+
-                  |
-                GATE
-                  |
-        qualified consequence
-        or continued restraint
+        |                 |
+        +--------+--------+
+                 |
+          QUALIFIED GATE
+                 |
+           DISPOSITION
+                 |
+       WARRANTED CONSEQUENCE
+          OR RESTRAINT
 ```
 
 The pillars are not two independent permission systems.
 
-They are two qualification responsibilities meeting at one consequential boundary.
+Pillar One cannot authorize Pillar Two through epistemic confidence.
 
-The important feature is asymmetry:
+Pillar Two cannot make an unsupported claim true by acting upon it.
+
+The resulting gate must preserve that asymmetry.
+
+### The Arch, Keystone, and Threshold
+
+A two-pillar gate may also be understood through its supporting geometry.
+
+The **pillars** preserve separate responsibilities.
+
+The **arch** represents the relationship through which their qualifications must compose.
+
+A **keystone**, where useful, represents the question of whether the qualifications actually support the same proposed crossing.
+
+The **lintel or boundary ceiling** may express restrictions on scope, consequence, or exposure.
+
+The **sill or threshold** represents the conditions under which a particular operation becomes eligible for execution.
+
+These are architectural analogies, not assertions that each requires a separate software component.
+
+The compositional question is important:
+
+> Do the evidence, identity, authority, resource, operation, destination, and present circumstances qualify the same consequential crossing?
+
+Two individually valid qualifications do not automatically imply a valid combination.
 
 ```text
-PILLAR ONE
-CANNOT AUTHORIZE
-PILLAR TWO
-BY ITSELF
-
-PILLAR TWO
-CANNOT MAKE
-PILLAR ONE TRUE
-BY ACTING
+VALID EVIDENCE
++
+VALID AUTHORITY
+≠
+AUTOMATICALLY VALID COMPOSITION
 ```
+
+The gate must qualify the actual proposed effect.
+
+A recognized opening is not necessarily an authorized passage.
 
 ---
 
-# Constitutional Distinctions
+## 4. The Epistemic Pillar
 
-Two-Pillar Gating is organized around a family of non-collapse rules:
+The Epistemic Pillar asks:
+
+> What is sufficiently established for the present purpose?
+
+Relevant concerns may include:
+
+- Source provenance and independence
+- Evidence quality and freshness
+- Contradictory observations
+- Alternative interpretations
+- Missing information
+- Contextual and semantic applicability
+- Unresolved relationships
+- Distinctions between observation, inference, and assertion
+
+Possible outcomes include grounded, partially grounded, contradictory, unresolved, stale, or insufficiently qualified.
+
+These are conceptual categories, not mandatory runtime labels.
+
+### ABIDE and Qualified Unresolvedness
+
+The architecture must be able to preserve unresolved matters without prematurely deciding what they mean.
 
 ```text
-EVIDENCE
-≠
-AUTHORIZATION
+UNRESOLVED ≠ FALSE
 
-CAPABILITY
-≠
-AUTHORITY
+UNRESOLVED ≠ AUTHORIZED
 
-CONFIDENCE
-≠
-PERMISSION
+NOT-YET ≠ NO
 
-OBSERVATION
-≠
-ACTUATION
+NOT-YET ≠ GO
+```
 
-DETECTION
-≠
-WARRANT
+**ABIDE** is the G³GT discipline of qualified temporal hold under unresolved but still viable conditions.
 
-INTERPRETATION
-≠
-JURISDICTION
+ABIDE does not require operational permissiveness.
 
-COHERENCE
-≠
-CORRECTNESS
+An unexplained event can be observed while the corresponding action remains prohibited.
 
-SOURCE VALIDITY
-≠
-ACTION VALIDITY
+A system does not need to establish a complete explanation of a threat before applying an independently warranted protective restriction.
 
-TASK TRANSFER
-≠
-AUTHORITY TRANSFER
+Likewise, ABIDE does not prohibit useful work within a separately established scope.
 
-ROUTE CHANGE
-≠
-WARRANT CHANGE
+---
 
-DELEGATION
-≠
-AUTHORITY CLONING
+## 5. The Operational Pillar
 
-PERSISTENCE
-≠
-TENURE
+The Operational Pillar asks:
 
-SUCCESS
-≠
-REPLAY LICENSE
+> What may legitimately produce this consequence, here and now?
 
+Relevant concerns include:
+
+- Present identity and role
+- Legitimate jurisdiction
+- Delegated authority
+- Tool and resource permissions
+- Actual operational effects
+- Scope and destination
+- Conditions, approvals, and restrictions
+- Freshness and expiry
+- Persistence and reversibility
+- Applicable safety constraints
+
+The existence of a technically possible route is insufficient.
+
+```text
+CAPABILITY ≠ AUTHORITY
+
+EVIDENCE ≠ AUTHORIZATION
+
+CONFIDENCE ≠ PERMISSION
+
+PREVIOUS SUCCESS ≠ REPLAY LICENSE
+```
+
+Operational restrictions must ultimately be enforced by systems capable of denying the prohibited effect.
+
+A model's semantic assessment, policy explanation, or generated approval statement is not sufficient enforcement.
+
+---
+
+## 6. The Kraft Family Around the Gate
+
+Two-Pillar Gating operates within a broader proposed G³GT architecture.
+
+The **Kraft family** comprises candidate responsibilities for preparing, examining, translating, and reconciling work around consequential boundaries.
+
+### SpellKraft — Meaning and Semantic Qualification
+
+SpellKraft examines how words, interpretations, polysemy, framing, and alternative descriptions relate to proposed effects.
+
+It may help identify:
+
+- Material semantic differences
+- Alternative interpretations
+- Consequentially equivalent descriptions
+- Negative contours and exclusions
+- Attempts to promote possibility into permission
+- Instructions requiring clearer operational wording
+- Unresolved meanings requiring ABIDE
+
+SpellKraft also has a separate constructive and generative research lineage.
+
+Its role here is narrower: assisting semantic qualification and bounded formulation.
+
+### ToolKraft — Capability and Effect
+
+ToolKraft examines which capabilities and external effects are implicated by the proposed operation.
+
+A different tool route may still produce the same protected consequence.
+
+### SeatKraft — Standing and Jurisdiction
+
+SeatKraft examines whether the actor, agent, role, or delegated occupant has current standing to request or perform the operation.
+
+A valid seat does not authorize every possible use of that seat.
+
+### GitKraft — Provenance and Change
+
+GitKraft provisionally supports source history, specifications, tool versions, dependency changes, and auditability.
+
+Its participation need not be a compulsory step in every execution path.
+
+### Selective Recruitment
+
+The Kraft family is not the gate.
+
+Its responsibilities may be recruited before a crossing, during execution, following changed circumstances, or at Return.
+
+```text
+KRAFT QUALIFICATION
+≠
+GATE AUTHORIZATION
+```
+
+The architecture favors minimum sufficient qualification while preserving non-negotiable enforcement.
+
+---
+
+## 7. A Candidate Gating Workflow
+
+The following sequence is explanatory rather than mandatory:
+
+```text
+CUSTOMS / INTAKE
+Preserve the original request
+and its provenance
+        |
+        v
+MOUNT CURRENT LOCALITY
+Establish relevant context,
+standing, and Thick Now
+        |
+        v
+RECRUIT QUALIFICATION
+SpellKraft / ToolKraft /
+SeatKraft / provenance
+        |
+        v
+TWO-PILLAR GATE
+What is grounded?
+What is authorized?
+Do these qualifications compose?
+        |
+        v
+DISPOSITION
+        |
+        +-- WARRANTED
+        |       |
+        |       v
+        |   FIRE-TIME ENFORCEMENT
+        |
+        +-- UNRESOLVED
+        |       |
+        |       v
+        |   ABIDE / VERIFY /
+        |   NARROW / CONTAIN
+        |
+        +-- PROHIBITED
+                |
+                v
+            DENY / STOP
+
+        |
+        v
+OBSERVE / AUDIT / RECONCILE
+        |
+        v
 RETURN
-≠
-RESTORED WARRANT
+Preserve qualified evidence
+Release obsolete privilege
 ```
 
-The shared principle is:
+Additional responsibilities such as PRESTIGE, Stutter, Hang-Fire, or containment may be recruited when a particular consequence requires them.
 
-> **One kind of qualification does not automatically inherit the jurisdiction of another.**
+An implemented workflow must identify which enforcement checks are mandatory and which diagnostic functions are optional.
+
+The conceptual sequence does not itself constitute a runtime.
 
 ---
 
-# Epistemic ABIDE
+## 8. Semantic Boundaries and Script B
 
-The Epistemic Pillar must be able to preserve unresolved relation.
+A major problem in agent systems is the presentation of an unchanged prohibited effect through a different semantic or operational route.
 
-Where evidence is incomplete but continued observation remains legitimate:
+G³GT refers provisionally to this class of presentation change as **Script B**.
 
-```text
-NOT-YET
-≠
-NO
+Script B is not a specific attack script or a validated detector.
 
-NOT-YET
-≠
-GO
-```
+It describes an offset between how an operation is presented and what consequence it would actually produce.
 
-This is where Two-Pillar Gating interfaces with **ABIDE**.
-
-ABIDE may preserve unresolved epistemic standing without converting continued observation into authority.
-
-```text
-CONTINUED OBSERVATION
-≠
-INCREASING AUTHORITY
-```
-
-Likewise, operational protection does not require epistemic certainty.
-
-A system does not need to fully explain why a request is unsafe before declining to produce an unauthorized consequence.
-
-Therefore:
-
-```text
-EPISTEMIC UNCERTAINTY
-DOES NOT REQUIRE
-OPERATIONAL PERMISSIVENESS
-```
-
-This is one of the central reasons for maintaining two pillars.
-
----
-
-# Consequence Identity
-
-Two-Pillar Gating is concerned with the **qualified effect**, not merely the wording or route used to request it.
-
-A change in description does not automatically create a change in authorization.
-
-```text
-REFRAMING
-≠
-NEW WARRANT
-```
-
-Likewise:
-
-```text
-ROUTE CHANGE
-≠
-WARRANT CHANGE
-```
-
-A denied operation should not become authorized merely because it is represented through:
-
-- another agent,
-- another workflow,
-- another role,
-- another business unit,
-- another tool path,
-- or another semantic framing.
-
-This creates an important architectural question:
-
-> **Did the requested consequence change, or only the path by which it was presented?**
-
----
-
-# Script B
-
-**Script B** is a provisional public concept for examining this problem.
-
-It does not describe a particular attack script or runtime detector.
-
-It describes an architectural class of offset:
-
-> **An alternate framing, route, or interpretive presentation that changes how an operation appears without necessarily changing the consequential operation that would occur.**
-
-Examples at the conceptual level include:
+For example:
 
 ```text
 DIRECT REQUEST
-→
+     ↓
 DELEGATED REQUEST
 
-ORIGINAL ROUTE
-→
-ALTERNATE ROUTE
+DENIED EXTRACTION
+     ↓
+"DATA SYNCHRONIZATION"
 
-DENIED FRAMING
-→
-REFRAMED REQUEST
+EXPIRED APPROVAL
+     ↓
+"CONTINUITY RESTORATION"
 
-VISIBLE ACTOR
-→
-DIFFERENT ACTOR
-
-SAME OR EQUIVALENT
-CONSEQUENTIAL EFFECT
+SAME PROTECTED EFFECT
 ```
 
-Therefore:
+A different description does not necessarily establish a different operation.
 
 ```text
 SEMANTIC OFFSET
 ≠
 AUTHORITY OFFSET
-```
-
-and:
-
-```text
-NEW PRESENTATION
-≠
-NEW WARRANT
-```
-
-Script B is relevant to SpellKraft because language can alter perceived entry geometry.
-
-It is relevant to gating because altered perception must not silently alter consequential authorization.
-
----
-
-# Relation to SpellKraft
-
-SpellKraft and Two-Pillar Gating have adjacent but distinct responsibilities.
-
-A provisional division is:
-
-```text
-SPELLKRAFT
-
-surfaces semantic,
-interpretive,
-and relational alternatives
-```
-
-while:
-
-```text
-TWO-PILLAR GATING
-
-qualifies what stands
-and what may have consequence
-```
-
-SpellKraft may reveal:
-
-- polysemy
-- reframing
-- semantic monopoly
-- alternative interpretation
-- hidden equivalence
-- changed semantic frontage
-- Script B offsets
-
-But:
-
-```text
-SEMANTIC AVAILABILITY
-≠
-AUTHORIZATION
-```
-
-SpellKraft may expose the seam.
-
-The gate remains responsible for whether anything consequential crosses it.
-
----
-
-# Delegation and Provenance
-
-Multi-agent systems make the distinction especially important.
-
-A downstream agent may receive a task through several layers of delegation.
-
-That does not imply that the final hop possesses independent authority.
-
-```text
-LAST HOP
-≠
-ORIGINAL WARRANT
-```
-
-and:
-
-```text
-DELEGATION
-DOES NOT
-LAUNDER AUTHORITY
-```
-
-A useful architectural requirement is that relevant delegation provenance remain inspectable enough to distinguish:
-
-```text
-TASK ARRIVED
-
-from
-
-TASK IS AUTHORIZED
-```
-
-A change in agent, role, route, or orchestration layer should not by itself erase the qualification history of the requested effect.
-
----
-
-# Relation to Agent Geometry
-
-Agent Geometry asks:
-
-> **What has standing here, what supports that standing, and what authority is allowed to ride on it?**
-
-Two-Pillar Gating asks a narrower question at consequential boundaries:
-
-```text
-WHAT IS GROUNDED?
-
-AND
-
-WHAT IS AUTHORIZED?
-```
-
-The relation can be expressed as:
-
-```text
-AGENT GEOMETRY
-→
-standing / seats / roles /
-delegation / authority topology
-
-TWO-PILLAR GATING
-→
-epistemic and operational
-qualification at passage
-```
-
-A seat may be valid.
-
-An occupant may be qualified.
-
-A route may exist.
-
-A tool may be available.
-
-None of those facts alone authorize a particular consequence.
-
-```text
-VALID SEAT
-≠
-VALID ACTION
-```
-
----
-
-# Relation to CBP
-
-The Cross-Basin Protocol asks what may cross between differentiated contexts and what qualification survives crossing.
-
-Two-Pillar Gating supplies a complementary distinction:
-
-```text
-CBP
-asks:
-
-WHAT MAY CROSS?
-```
-
-while:
-
-```text
-TWO-PILLAR GATING
-asks:
-
-WHAT IS SUFFICIENTLY GROUNDED?
-
-AND
-
-WHAT MAY HAVE CONSEQUENCE?
-```
-
-The architectures meet naturally at cross-boundary action.
-
-CBP already separates:
-
-```text
-DELIVERY
-≠
-UPTAKE
-≠
-WARRANT
-≠
-ACTUATION
-```
-
-Two-Pillar Gating concentrates specifically on the transition from:
-
-```text
-WHAT MAY BE BELIEVED OR HELD
-
-to
-
-WHAT MAY BE DONE
-```
-
----
-
-# Relation to Purposefully Provisioned Optimization
-
-Purposefully Provisioned Optimization separates optimization capacity from trajectory authority.
-
-Two-Pillar Gating carries a parallel distinction:
-
-```text
-OBJECTIVE INFERABLE
-≠
-OBJECTIVE WARRANTED
-```
-
-and:
-
-```text
-OPTIMIZATION CAPACITY
-≠
-OPERATIONAL AUTHORITY
-```
-
-PPO asks whether optimization pressure may organize trajectory.
-
-Two-Pillar Gating asks whether the supporting epistemic and operational conditions are independently qualified.
-
-Neither architecture permits capability, coherence, pressure, or apparent usefulness to manufacture its own authority.
-
----
-
-# Relation to Swarm Nexus
-
-Swarm / Nexus examines persistent and load-bearing relational formation.
-
-Two-Pillar Gating becomes relevant when such formations begin routing requests, concentrating evidence, delegating actions, or shaping consequential decisions.
-
-In particular:
-
-```text
-COORDINATION CENTRALITY
-≠
-AUTHORITY CENTRALITY
-```
-
-and:
-
-```text
-LOW DIRECT PRIVILEGE
-≠
-LOW RELATIONAL LEVERAGE
-```
-
-A coordinator may hold no privileged credentials while still influencing:
-
-- what evidence reaches a human,
-- which specialist receives a request,
-- how alternatives are framed,
-- which route becomes salient,
-- or whether a denied effect reappears elsewhere.
-
-Two-Pillar Gating therefore evaluates consequential qualification independently of apparent organizational centrality.
-
----
-
-# Fresh Qualification
-
-Authorization should not silently become durable merely because it was once valid.
-
-```text
-PAST WARRANT
-≠
-CURRENT WARRANT
-```
-
-Likewise:
-
-```text
-RETURN
-≠
-RESTORED WARRANT
-```
-
-A replaced agent, renewed workflow, resumed task, or reconstructed state may require fresh qualification.
-
-This is especially important where:
-
-- authority was delegated,
-- identity changed,
-- locality changed,
-- consequences changed,
-- evidence aged,
-- or the original approval no longer maps cleanly to the current operation.
-
-The architecture therefore favors **current qualification over inherited permission**.
-
----
-
-# Consequence and Reconciliation
-
-Two-Pillar Gating distinguishes internal state restoration from external consequence reversal.
-
-```text
-RESTORED STATE
-≠
-REVERSED CONSEQUENCE
-```
-
-Once an action produces external effect, such as:
-
-```text
-payment
-communication
-publication
-disclosure
-credential use
-contractual commitment
-```
-
-ordinary rollback may no longer be meaningful.
-
-A compensating action is itself a new consequential operation.
-
-Therefore:
-
-```text
-CORRECTION
-≠
-UNDO
-```
-
-and:
-
-```text
-COMPENSATING ACTION
-REQUIRES
-ITS OWN QUALIFICATION
-```
-
----
-
-# Failure Modes
-
-Several provisional failure classes are visible.
-
-## Epistemic Bootstrap
-
-A claim becomes treated as sufficiently grounded because it has already been used downstream.
-
-```text
-USED
-≠
-VALIDATED
-```
-
-## Operational Bootstrap
-
-A prior action is treated as authorization for another action.
-
-```text
-ACTED ONCE
-≠
-AUTHORIZED AGAIN
-```
-
-## Delegation Laundering
-
-A denied or restricted operation becomes apparently acceptable after passing through another agent, role, route, or workflow.
-
-## Semantic Laundering
-
-A consequentially equivalent operation receives different treatment because its wording changed.
-
-## Authority Smuggling
-
-Epistemic confidence, tool availability, role standing, or coordination centrality silently imports operational authority.
-
-## Epistemic Capture
-
-The same actor that assembles a consequential request also becomes the sole source of evidence used to approve it.
-
-## Return Bootstrap
-
-Restored state is mistaken for restored warrant.
-
-These categories are provisional research objects, not validated universal failure classes.
-
----
-
-# Falsification Surface
-
-Two-Pillar Gating should be capable of failing as an explanatory architecture.
-
-Useful tests include:
-
-## Pillar-Separation Test
-
-Can the architecture represent:
-
-```text
-HIGH EPISTEMIC CONFIDENCE
-+
-LOW OPERATIONAL AUTHORITY
-```
-
-and:
-
-```text
-LOW EPISTEMIC CONFIDENCE
-+
-CLEAR OPERATIONAL PROHIBITION
-```
-
-without collapsing either condition?
-
-If not, the two-pillar distinction is not doing meaningful work.
-
-## Route-Invariance Test
-
-Does a consequentially equivalent request receive different authorization merely because its route, agent, or framing changes?
-
-If yes, the gate may be tracking presentation rather than warrant.
-
-## Provenance Test
-
-Can the system distinguish the immediate requester from the origin and delegation history relevant to authority?
-
-If not, delegated authority may be laundering itself.
-
-## Evidence-Independence Test
-
-Can consequential approval rely on source evidence independently inspectable from the agent that assembled the request?
-
-If not, epistemic and operational influence may be overly concentrated.
-
-## Freshness Test
-
-Does old authorization silently survive a material change in evidence, identity, locality, delegation, or consequence?
-
-If yes, current warrant is not being adequately requalified.
-
-## Ordinary-Case Test
-
-Can the architecture permit ordinary low-consequence, well-grounded, properly authorized operations without invoking unnecessary ceremony?
-
-If not, the gate has become administratively overfitted.
-
----
-
-# Ordinary Cases
-
-Two-Pillar Gating should not turn every interaction into a high-friction approval process.
-
-Many operations are ordinary.
-
-A useful implementation may conclude that:
-
-```text
-evidence is sufficient
-
-authority is already established
-
-consequence is bounded
-
-delegation is valid
-
-freshness is adequate
-
-no material boundary has changed
-```
-
-and allow ordinary work to proceed.
-
-The architecture exists to preserve distinctions where they matter, not maximize gating overhead.
-
-```text
-QUALIFICATION
-≠
-MAXIMUM FRICTION
-```
-
----
-
-# Nonclaims
-
-Two-Pillar Gating is not:
-
-- a complete access-control system,
-- a universal policy engine,
-- a specific runtime detector,
-- a prompt-filtering technique,
-- a complete identity system,
-- a complete tool-permission model,
-- a theory of machine intent,
-- a claim that every semantic change is adversarial,
-- a claim that every delegation chain is dangerous,
-- a replacement for CBP,
-- a replacement for Agent Geometry,
-- a replacement for PPO,
-- a replacement for ABIDE,
-- a replacement for Swarm / Nexus,
-- or a claim of empirical validation.
-
-It is a public architectural distinction between:
-
-```text
-WHAT STANDS
-
-and
-
-WHAT MAY HAVE CONSEQUENCE
-```
-
----
-
-# Adjacent Architectural Jurisdictions
-
-A current public neighborhood can be summarized as:
-
-```text
-ABIDE
-→ may unresolved standing continue?
-
-PPO
-→ what optimization pressure
-  may organize trajectory?
-
-AGENT GEOMETRY
-→ what has standing
-  and what authority rides on it?
-
-CBP
-→ what may cross
-  between differentiated contexts?
-
-SWARM / NEXUS
-→ what relational formation
-  becomes load-bearing?
-
-TWO-PILLAR GATING
-→ what is sufficiently grounded
-  and what is authorized
-  to have consequence?
-
-SAFETY ARCHITECTURE
-→ what constitutional conditions
-  should remain true across them?
-```
-
-These responsibilities are adjacent.
-
-They are not one hierarchy.
-
-```text
-ADJACENCY
-≠
-OWNERSHIP
-```
-
----
-
-# Research Questions
-
-Current questions include:
-
-1. What minimum information is necessary to keep epistemic warrant and operational authorization independently inspectable?
-2. When should authorization survive delegation?
-3. When must a change in route trigger fresh operational qualification?
-4. How should consequential equivalence be evaluated across different semantic framings?
-5. What evidence should remain independent of the agent assembling an approval request?
-6. How should stale evidence affect otherwise valid authorization?
-7. What must be revoked when an agent, seat, or role is retired?
-8. What legitimate work may survive revocation without carrying prior authority?
-9. When does routing centrality create enough relational leverage to require additional qualification?
-10. How can ordinary low-risk operations remain low-friction while higher-consequence operations receive stronger qualification?
-11. What observations would show that two pillars add no useful discriminating power over a conventional authorization model?
-12. Where should Script B remain a useful semantic diagnostic rather than becoming an overbroad attack category?
-
-These are research questions, not validated results.
-
----
-
-# Public Disclosure Boundary
-
-This repository publishes the architectural responsibility.
-
-It does not publish runtime control law.
-
-Public material may include:
-
-- problem definition,
-- working definitions,
-- architectural distinctions,
-- failure classes,
-- falsifiers,
-- research questions,
-- high-level experimental methodology,
-- case analysis,
-- and results.
-
-Implementation-sensitive material may remain private, including:
-
-- exact detector logic,
-- thresholds,
-- weighting,
-- state-transition machinery,
-- semantic-equivalence classifiers,
-- route-selection logic,
-- state-to-action mappings,
-- intervention constants,
-- exact gating cadence,
-- bypass-sensitive heuristics,
-- and exploit-relevant enforcement details.
-
-The governing distinction is:
-
-```text
-ARCHITECTURAL RESPONSIBILITY
-≠
-RUNTIME CONTROL LAW
-```
-
----
-
-# Working Invariants
-
-```text
-EPISTEMIC WARRANT
-≠
-OPERATIONAL AUTHORIZATION
-
-EVIDENCE
-≠
-AUTHORIZATION
-
-CAPABILITY
-≠
-AUTHORITY
-
-CONFIDENCE
-≠
-PERMISSION
-
-OBSERVATION
-≠
-ACTUATION
-
-INTERPRETATION
-≠
-JURISDICTION
-
-ROUTE CHANGE
-≠
-WARRANT CHANGE
 
 REFRAMING
 ≠
 NEW WARRANT
 
-DELEGATION
+ROUTE CHANGE
 ≠
-AUTHORITY CLONING
+WARRANT CHANGE
+```
 
+The gate should examine consequential identity rather than rely exclusively on surface wording.
+
+### Negative Contours
+
+Some operational boundaries can be defined more precisely by stating what an action does **not** include or authorize.
+
+SpellKraft may help express those boundaries while preserving useful activity inside them.
+
+For example, an agent may be permitted to prepare a report without transmitting underlying protected records.
+
+An unresolved interpretation of the broader task does not invalidate the narrower authorized activity.
+
+Nor does the narrower activity grant permission for the excluded effect.
+
+### Bounded Alternative Routes
+
+A legitimate alternative may change the actual support conditions of an operation.
+
+However:
+
+```text
+NEWLY QUALIFIED ROUTE
+≠
+RENAMED PROHIBITED ROUTE
+```
+
+A new description cannot create a missing warrant.
+
+---
+
+## 9. Delegation and Swarm Coordination
+
+Multi-agent systems create opportunities for authority confusion.
+
+A request may be assembled, transformed, routed, and eventually executed by different actors.
+
+Each step can change its wording or apparent legitimacy.
+
+```text
 LAST HOP
 ≠
 ORIGINAL WARRANT
 
-PERSISTENCE
+TASK TRANSFER
 ≠
-TENURE
+AUTHORITY TRANSFER
+
+DELEGATION
+≠
+AUTHORITY CLONING
+```
+
+The architecture should preserve sufficient provenance to distinguish the path by which work arrived from the authority under which it may be performed.
+
+Another important distinction concerns collective organization.
+
+An agent can possess little direct privilege while exerting considerable influence over which evidence, requests, or tools reach privileged actors.
+
+```text
+LOW DIRECT PRIVILEGE
+≠
+LOW RELATIONAL LEVERAGE
+
+COORDINATION CENTRALITY
+≠
+AUTHORITY CENTRALITY
+```
+
+Consequential qualification should not depend solely on which agent visibly executes the last step.
+
+---
+
+## 10. Fire-Time and Consequential Disposition
+
+The decisive operational question arises when a proposed action reaches the boundary at which consequences may occur.
+
+**Fire-Time** is the G³GT term for that consequential decision point.
+
+A candidate action may be:
+
+- Permitted within independently verified scope
+- Narrowed to a separately qualified operation
+- Held for further evidence or approval
+- Denied because it is prohibited
+- Redirected into a bounded recovery or reconciliation locality
+
+The epistemic status of a request and the operational disposition need not be identical.
+
+An unresolved interpretation may retain standing for investigation while the dependent action remains unavailable.
+
+```text
+EPISTEMIC PRESERVATION
+≠
+OPERATIONAL AVAILABILITY
+```
+
+The Fire-Time boundary must not rely solely on the model's own interpretation of its authority.
+
+---
+
+## 11. STOP, Orientation, and Safe Restart
+
+Stopping an operation does not necessarily eliminate its residual trajectory.
+
+A denied task may remain queued.
+
+A successor agent may inherit its wording.
+
+A scheduled process may attempt the same operation later.
+
+G³GT therefore distinguishes:
+
+```text
+STOP
+≠
+REORIENTATION
+≠
+RELEASE
+```
+
+**STOP** ends or restricts the relevant execution authority.
+
+**Reorientation**, provisionally described through STOP–FLIP, changes the permitted subsequent work from completion of the denied objective toward bounded review, reconciliation, or release.
+
+**Release** ends the occupancy or privilege that no longer has warrant.
+
+The orientation concept is operational rather than psychological.
+
+It concerns observable tasks, available routes, queued actions, permissions, and successor instructions—not claims about hidden model intentions.
+
+```text
+UNFINISHED
+≠
+AUTHORIZED TO FINISH
+
+STOPPED ACTOR
+≠
+STOPPED OBJECTIVE
+```
+
+A safe restart requires independently qualified current authority.
+
+---
+
+## 12. Hang-Fire and Unsettled Consequences
+
+Not every unsuccessful-looking operation is known to have failed.
+
+A request may have been issued while its external result remains unsettled.
+
+```text
+ACTION ISSUED
+≠
+ACTION SETTLED
+
+NO CONFIRMATION
+≠
+PROVEN FAILURE
+
+TIMEOUT
+≠
+RETRY AUTHORIZATION
+```
+
+A **Hang-Fire locality** is a candidate bounded state for preserving an issued but unsettled consequence.
+
+Its responsibilities may include:
+
+- Original operation identity and provenance
+- Current observation status
+- Restrictions on duplicate actuation
+- Authorized status and reconciliation checks
+- Independent settlement verification
+- Controlled escalation and release
+
+The original execution authority may end while the unsettled consequence retains qualified standing for observation.
+
+A Hang-Fire state should not be collapsed into a general denial state.
+
+The system may need to reconcile an action that has already had external effects.
+
+---
+
+## 13. Container and Qualified Locality
+
+A container is not merely a storage box.
+
+Within G³GT, a container may be provisionally understood as a bounded operational locality defining:
+
+- What may enter
+- What claims may be made
+- What actions may occur
+- What evidence persists
+- What authority is available
+- What operations are excluded
+- How long the hold remains justified
+- What conditions permit release or transfer
+
+An unresolved or adversarially affected operation may require a container whose permissible activity is oriented away from the original execution trajectory.
+
+This does not require destruction of the relevant evidence or task history.
+
+It requires that continued standing not be mistaken for continued permission.
+
+```text
+SAME ADDRESS
+≠
+SAME OPERATIONAL LOCALITY
+
+SAME TASK STATE
+≠
+SAME EXECUTION WARRANT
+```
+
+This is a practical candidate application of G³GT's earlier Zero-Distance research.
+
+The underlying data may remain in place while the governing permissions and relationships change.
+
+---
+
+## 14. Audit, Deprivileging, and Integration
+
+Successful mechanisms can gradually acquire unwarranted authority.
+
+A useful interpretation becomes the default.
+
+A frequently used tool becomes treated as necessary.
+
+A previously authorized agent becomes difficult to replace.
+
+A successful defensive policy begins to be treated as exhaustive.
+
+G³GT investigates these conditions through a provisional cross-functional audit grammar:
+
+**Devil's Audit** asks what is being carried, inherited, or treated as necessary.
+
+**Tower** examines what remains viable when an assumption or support loses automatic privilege.
+
+**Bottomless Three** challenges the tendency of surviving structures to claim exhaustive authority.
+
+**Integration** examines what new organization, dependency, or concentration of influence develops from what survives.
+
+These functions may be recruited before or after consequential action.
+
+They are diagnostic research constructs, not automatic credentials or revocation powers.
+
+```text
+SUCCESS
+≠
+PERMANENT AUTHORITY
+
+SURVIVAL
+≠
+EXHAUSTIVENESS
+
+INTEGRATION
+≠
+IMMUNITY FROM CORRECTION
+```
+
+This audit grammar also applies to the proposed gating architecture itself.
+
+A gate must remain capable of being examined, revised, and tested against alternatives.
+
+---
+
+## 15. Return, Settlement, and Corrigible Release
+
+An authorized operation may produce consequences that outlast the agent, session, or permission under which it began.
+
+External publication, disclosure, payment, credential use, or communication may not be reversible through internal rollback.
+
+```text
+RESTORED STATE
+≠
+REVERSED CONSEQUENCE
+
+CORRECTION
+≠
+UNDO
 
 RETURN
 ≠
 RESTORED WARRANT
-
-RESTORED STATE
-≠
-REVERSED CONSEQUENCE
 ```
+
+A compensating action may itself require new authorization.
+
+G³GT treats **Return** as a qualified continuation that can preserve useful evidence and work while releasing obsolete permissions, occupancy, and authority.
+
+A successor may inherit a task record without inheriting the prior actor's warrant.
+
+The architecture therefore separates continued availability of information from continued authority to act.
 
 ---
 
-# Compact Project Statement
+## 16. Standing Reserve and Novelty
 
-> **Two-Pillar Gating separates epistemic qualification from operational authorization so that what appears grounded, coherent, available, delegated, or capable does not automatically acquire permission to produce consequence.**
+No practical semantic evaluator or security taxonomy can anticipate every meaningful variation.
 
-Short form:
+Two-Pillar Gating must therefore avoid treating its known failure categories as exhaustive.
+
+G³GT's FLEX, ABIDE, and Chance-at-a-Chance research suggests preserving standing capacity for recognizing previously unmodeled relations.
+
+For security work, such reserve may include:
+
+- Bounded anomaly investigation
+- Protected evidence collection
+- Independent review
+- Capacity for new semantic interpretations
+- Controlled experimentation
+- Recovery and requalification
+
+This does not mean leaving execution rights available for unknown future requests.
 
 ```text
-WHAT STANDS?
+RECOGNITION RESERVE
 ≠
-WHAT MAY ACT?
+EXECUTION PRIVILEGE
+
+UNFAMILIAR RELATION
+≠
+UNAUTHORIZED BY DEFINITION
+
+UNFAMILIAR RELATION
+≠
+AUTOMATICALLY WARRANTED
 ```
 
-Or:
-
-> **Ground claims independently. Authorize consequences independently. Do not let one pillar manufacture the other.**
+The objective is to remain capable of noticing unforeseen conditions while keeping consequential permissions governed.
 
 ---
 
-# Development Status
+## 17. Example — An Authorized Report and an Unauthorized Export
 
-Two-Pillar Gating is an active research architecture under continuing development.
+Consider an organization whose assistant may create aggregate reports from customer data.
 
-Its current public surface is intentionally narrower than the internal DEV ecology.
+Raw customer records may not be transmitted to an external destination without separate authorization.
+
+### Legitimate route
+
+A user requests an approved aggregate report.
+
+SpellKraft identifies the intended reporting operation.
+
+ToolKraft establishes its actual data access and output effects.
+
+SeatKraft establishes the user's relevant role.
+
+The Epistemic Pillar confirms the request and evidence are sufficiently grounded.
+
+The Operational Pillar verifies permission for the specific aggregate-report operation.
+
+The independent execution boundary permits the authorized action.
+
+The system records the result and releases temporary privileges.
+
+### Script B route
+
+Another agent asks to *synchronize the underlying records for reporting continuity*.
+
+The phrase differs.
+
+The requested effect may not.
+
+SpellKraft identifies the possible semantic offset.
+
+ToolKraft establishes that the operation would export raw records.
+
+SeatKraft finds no corresponding authorization for the requester.
+
+The Operational Pillar denies the export regardless of the new wording.
+
+Relevant evidence is preserved.
+
+The prohibited effect does not acquire permission merely because another agent, route, or description presented it.
+
+### What the example does not establish
+
+This is an architectural test case.
+
+It does not demonstrate that any current G³GT implementation can reliably perform every semantic, identity, and enforcement function described.
+
+---
+
+## 18. Failure Modes
+
+The following are provisional failure classes.
+
+| Failure | Description |
+|---|---|
+| Epistemic bootstrap | A claim is treated as validated because another component already used it |
+| Operational bootstrap | A previous action becomes justification for a later action |
+| Semantic laundering | An equivalent consequence is treated differently because the wording changes |
+| Delegation laundering | An unauthorized action acquires apparent legitimacy through intermediate agents |
+| Authority smuggling | Confidence, capability, role, or coordination is promoted into permission |
+| Compositional mismatch | Individually valid qualifications do not apply to the same actual operation |
+| Return bootstrap | Restored task state is mistaken for restored authority |
+| False settlement | A timeout or missing confirmation is treated as proof of failure |
+| Orientation persistence | A stopped actor or successor continues pursuing the denied objective |
+| Defensive exhaustion | Repeated interpretive pressure consumes the capacity needed for legitimate work or investigation |
+| Exhaustiveness capture | The current semantic or security taxonomy is treated as a complete map of future possibilities |
+
+These are candidates for research and testing, not validated universal classifications.
+
+---
+
+## 19. Falsification and Test Surface
+
+The architecture should be examined through experiments that can demonstrate where its distinctions are insufficient.
+
+### T01 — Pillar Separation
+
+Can the system maintain high epistemic confidence while denying an unauthorized effect?
+
+Can it preserve unresolved evidence while independently enforcing a known prohibition?
+
+### T02 — Consequential Route Invariance
+
+Does an equivalent prohibited operation remain denied after semantic reframing, routing changes, or agent delegation?
+
+### T03 — Compositional Qualification
+
+Can the system detect a case where the source evidence, actor role, and tool are individually valid but the specific combined operation is not authorized?
+
+### T04 — Negative-Contour Precision
+
+Can independent readers reconstruct what an instruction permits and excludes?
+
+Can the system distinguish a genuinely modified authorized operation from a renamed prohibited effect?
+
+### T05 — Fresh Warrant
+
+When identity, locality, resource, scope, or time changes, does prior authorization remain appropriately restricted?
+
+### T06 — STOP–FLIP
+
+After denial, can queued tasks, successor agents, or alternative workflows recreate the prohibited effect without fresh authorization?
+
+### T07 — Hang-Fire
+
+If an external operation times out, can the system preserve uncertainty and prevent unauthorized duplicate execution?
+
+### T08 — Provenance Independence
+
+Can a reviewer distinguish independently verified facts from claims assembled by the requesting agent?
+
+### T09 — Novelty Reserve
+
+Can unfamiliar but relevant anomalies be preserved and examined without granting their proposed operations authority?
+
+### T10 — Ordinary Work
+
+Can low-consequence, adequately grounded, properly authorized tasks proceed without unnecessary ceremony?
+
+### T11 — Release and Reconciliation
+
+Can temporary authority be removed while necessary evidence and unsettled external consequences remain available for qualified handling?
+
+### T12 — Comparative Value
+
+What measurable benefit, if any, does the two-pillar distinction provide beyond conventional access-control and authorization designs?
+
+A candidate implementation that cannot demonstrate meaningful benefits should not be declared successful merely because it uses G³GT terminology.
+
+---
+
+## 20. Relationship to Other G³GT Research
+
+Two-Pillar Gating belongs to a larger architecture of differentiated responsibilities.
+
+**ABIDE** investigates qualified unresolved standing.
+
+**SpellKraft** investigates linguistic formation, interpretation, translation, and consequential semantic boundaries.
+
+**ToolKraft** investigates tool capability and actual effects.
+
+**SeatKraft** investigates seats, occupancy, standing, and jurisdiction.
+
+**GitKraft** investigates provenance, versioning, and change qualification.
+
+**Agent Geometry** examines how roles, delegations, standing, and relational leverage are organized.
+
+**CBP** examines cross-boundary delivery, uptake, qualification, and authority.
+
+**PPO** examines whether optimization pressure is allowed to organize trajectories.
+
+**Swarm/Nexus** examines collective formation, coordination, and load-bearing relationships.
+
+**FLEX** investigates preserving movement and recognition capacity while resisting extractive closure or pressure.
+
+**Zero Doctrine and Safety Responsibility Architecture** provide historical and constitutional constraint research.
+
+**PRESTIGE** provisionally addresses selective recruitment of additional qualification where consequential conditions warrant it.
+
+**Stutter, Customs, and Return** examine actual effects, reconciliation, residue, and re-entry.
+
+These are adjacent responsibilities.
+
+They are not all required as separate runtime modules.
+
+```text
+ADJACENCY ≠ OWNERSHIP
+
+CONCEPTUAL INTERFACE
+≠
+DEPLOYED INTEGRATION
+```
+
+---
+
+## 21. Ordinary-Case Discipline
+
+Two-Pillar Gating should not require every ordinary operation to undergo maximum scrutiny.
+
+Where evidence, identity, authorization, scope, and consequential effects are already adequately established, a system should be able to proceed efficiently.
+
+Additional qualification becomes relevant when a material condition changes.
+
+```text
+QUALIFICATION
+≠
+MAXIMUM FRICTION
+
+SELECTIVE RECRUITMENT
+≠
+OPTIONAL ENFORCEMENT
+```
+
+Efficiency is legitimate.
+
+Skipping a required consequential boundary because it is inconvenient is not.
+
+---
+
+## 22. Nonclaims and Implementation Boundaries
+
+This repository does not claim:
+
+- A completed agent security framework
+- A deployed authorization service
+- A validated semantic-equivalence detector
+- A universal policy engine
+- Direct access to model internal intentions
+- Complete detection of adversarial prompt injection
+- A formalized or validated Zero-Distance mechanism
+- Verified implementation of FLEX, STOP–FLIP, or Hang-Fire
+- Guaranteed resistance to all future attack vectors
+- Replacement of established identity, access-control, or security engineering practices
+
+This repository separates an architectural responsibility from its eventual implementation.
 
 ```text
 NAMED
@@ -1147,12 +994,144 @@ VALIDATED
 
 DEFINED
 ≠
-OPERATIONALIZED
+IMPLEMENTED
 
-OPERATIONALIZED
+IMPLEMENTED
 ≠
 EMPIRICALLY SUPPORTED
 ```
 
-The purpose of this repository is to make the architectural distinction public, inspectable, falsifiable, and available for comparison while keeping implementation-sensitive runtime machinery outside the published surface.
+### Public Specification Boundary
 
+The repository publishes architectural distinctions, candidate responsibilities, failure modes, tests, and research questions.
+
+Implementation-specific control logic, if developed, should be documented and reviewed under an appropriate security and disclosure process.
+
+Keeping implementation details outside this README does not establish that an implementation is secure.
+
+---
+
+## 23. Open Research Questions
+
+Several questions remain active.
+
+1. What minimum information must cross between semantic, capability, standing, and authorization functions?
+2. How can two qualified pillars be shown to compose correctly for one consequential operation?
+3. Which Kraft functions need independent tooling, and which should remain shared interfaces or diagnostic procedures?
+4. How should a system represent multiple consequential interpretations without exhaustive semantic enumeration?
+5. How can operational boundaries remain definite while epistemic ambiguity remains unresolved?
+6. When does a denied operation require STOP alone, and when must residual orientation also be changed?
+7. How should Hang-Fire states be reconciled without unauthorized retries?
+8. How should agent replacement preserve legitimate work without inheriting obsolete authority?
+9. Which forms of standing reserve improve recognition of unfamiliar failures?
+10. How should audit and integration detect when a successful configuration is becoming unnecessarily privileged?
+11. How can the architecture remain low-friction for ordinary use?
+12. What experiments would demonstrate that Two-Pillar Gating provides no additional explanatory or engineering value?
+
+These remain open.
+
+The architecture should be revisable in response to evidence.
+
+---
+
+## 24. Core Invariants
+
+```text
+EPISTEMIC WARRANT
+≠
+OPERATIONAL AUTHORIZATION
+
+CAPABILITY
+≠
+AUTHORITY
+
+INTERPRETATION
+≠
+JURISDICTION
+
+SEMANTIC OFFSET
+≠
+AUTHORITY OFFSET
+
+ROUTE CHANGE
+≠
+WARRANT CHANGE
+
+TASK TRANSFER
+≠
+AUTHORITY TRANSFER
+
+VALID COMPONENTS
+≠
+AUTOMATICALLY VALID COMPOSITION
+
+UNRESOLVED
+≠
+AUTHORIZED
+
+CONTINUED OBSERVATION
+≠
+CONTINUED EXECUTION
+
+STOP
+≠
+REORIENTATION
+
+UNFINISHED
+≠
+AUTHORIZED TO FINISH
+
+ACTION ISSUED
+≠
+ACTION SETTLED
+
+SAME ADDRESS
+≠
+SAME OPERATIONAL LOCALITY
+
+SURVIVAL
+≠
+EXHAUSTIVENESS
+
+RETURN
+≠
+RESTORED WARRANT
+
+RESTORED STATE
+≠
+REVERSED CONSEQUENCE
+```
+
+---
+
+## 25. Compact Project Statement
+
+**Two-Pillar Gating separates epistemic qualification from operational authorization so that evidence, interpretation, confidence, capability, delegation, previous success, or semantic reframing cannot independently manufacture permission to produce consequences.**
+
+The architecture recruits relevant qualification at consequential boundaries while preserving unresolved evidence, legitimate alternative routes, independently enforced permissions, auditability, and qualified Return.
+
+Its aim is neither universal suspicion nor exhaustive semantic control.
+
+It is the preservation of consequential distinctions where they matter.
+
+### Short form
+
+> **What stands? What may act? Qualify their relationship before consequence.**
+
+And:
+
+> **A coherent passage is not necessarily an authorized crossing.**
+
+---
+
+## Development Status
+
+Two-Pillar Gating remains a provisional G³GT architectural research project.
+
+Its public surface is intentionally narrower than the full developmental corpus.
+
+The architecture is offered for examination, criticism, comparison, implementation research, and falsification.
+
+It is not presented as an empirically validated security system.
+
+**Ground claims independently. Authorize consequences independently. Preserve the distinction at Fire-Time.**
